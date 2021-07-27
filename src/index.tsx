@@ -5,8 +5,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import { createGlobalStyle } from "styled-components";
-
-const App = () => <h1>Hello world</h1>;
+import { App } from "./App";
 
 const GlobalStyle = createGlobalStyle`
   html {
@@ -14,6 +13,8 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    background: #EEE;
+    
     font-size: 1.6rem;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   }

@@ -10,7 +10,7 @@ export const App = () => (
   <AppLayout>
     <React.Suspense fallback={null}>
       <Switch>
-        <Route path="/desks" render={() => <DesksPage />} />
+        <Route path="/desks" component={DesksPage} />
         <Route path="/employees" render={() => <EmployeesPage />} />
         <Route path="/calendar" render={() => <CalendarPage />} />
         <Redirect to="/desks" />

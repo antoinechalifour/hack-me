@@ -1,12 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { connect } from "react-redux";
+
 import { Card } from "../../components/Card";
 import { VStack } from "../../components/VStack";
 import { Label } from "../../components/form/Label";
 import { Input } from "../../components/form/Input";
 import { ErrorMessage } from "../../components/form/ErrorMessage";
 import { Button } from "../../components/Button";
+import { addNewDesk } from "../desksSlice";
 
 interface FormData {
   name: string;
@@ -14,13 +17,13 @@ interface FormData {
 }
 
 interface AddNewDeskViewProps {
-  addDesk: (name: string, numberOfEmployees: number) => void;
+  onNewDesk: (name: string, numberOfEmployees: number) => void;
 }
 
-export const AddNewDeskView = ({ addDesk }: AddNewDeskViewProps) => {
+export const AddNewDeskView = ({ onNewDesk }: AddNewDeskViewProps) => {
   const { handleSubmit, register, formState } = useForm<FormData>();
   const onSubmit = (data: FormData) =>
-    addDesk(data.name, Number(data.numberOfEmployees));
+    onNewDesk(data.name, Number(data.numberOfEmployees));
 
   return (
     <VStack>
@@ -65,3 +68,7 @@ export const AddNewDeskView = ({ addDesk }: AddNewDeskViewProps) => {
     </VStack>
   );
 };
+
+export const AddNewDeskViewContainer = connect(null, {
+  onNewDesk: addNewDesk,
+})(AddNewDeskView);

@@ -2,11 +2,18 @@ import "reset.css/reset.css";
 
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import reportWebVitals from "./reportWebVitals";
+import { Router } from "react-router-dom";
+import { Provider } from "react-redux";
 import { createGlobalStyle } from "styled-components";
-import { App } from "./App";
+import { createBrowserHistory } from "history";
 
+import reportWebVitals from "./reportWebVitals";
+import { App } from "./App";
+import { createStore } from "./store";
+import { makeAppDependencies } from "./dependencies";
+
+const history = createBrowserHistory();
+const store = createStore(makeAppDependencies(history));
 const GlobalStyle = createGlobalStyle`
   html {
     font-size: 62.5%;
@@ -26,10 +33,12 @@ const GlobalStyle = createGlobalStyle`
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalStyle />
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <Router history={history}>
+      <GlobalStyle />
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </Router>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -24,7 +24,7 @@ const renderForTesting = (component: JSX.Element) =>
 describe("<AddNewDeskView />", () => {
   test("all fields are required", async () => {
     // Arrange
-    renderForTesting(<AddNewDeskView addDesk={jest.fn()} />);
+    renderForTesting(<AddNewDeskView onNewDesk={jest.fn()} />);
 
     // Act
     await submitForm();
@@ -38,7 +38,7 @@ describe("<AddNewDeskView />", () => {
     // Arrange
     const addDesk = jest.fn();
 
-    renderForTesting(<AddNewDeskView addDesk={addDesk} />);
+    renderForTesting(<AddNewDeskView onNewDesk={addDesk} />);
     expect(selectors.deskNameErrorMessage()).not.toBeInTheDocument();
     expect(selectors.numberOfEmployeesErrorMessage()).not.toBeInTheDocument();
 

@@ -5,50 +5,93 @@ import userEvent from "@testing-library/user-event";
 
 import { AddNewDeskView } from "./AddNewDeskView";
 
-const selectors = {
-  deskNameInput: () => screen.getByLabelText("Desk name"),
-  numberOfEmployeesInput: () => screen.getByLabelText("Number of employees"),
-  deskNameErrorMessage: () => screen.queryByText("The desk name is required."),
-  numberOfEmployeesErrorMessage: () =>
-    screen.queryByText("The number of employees is required."),
-};
-
-const submitForm = () =>
-  act(async () => {
-    userEvent.click(screen.getByRole("button", { name: "Add desk" }));
-  });
+const selectors = {};
 
 const renderForTesting = (component: JSX.Element) =>
   render(<MemoryRouter>{component}</MemoryRouter>);
 
 describe("<AddNewDeskView />", () => {
+  let form: AddNewDeskViewTest;
+
+  beforeEach(() => {
+    form = new AddNewDeskViewTest();
+  });
+
   test("all fields are required", async () => {
     // Arrange
-    renderForTesting(<AddNewDeskView onNewDesk={jest.fn()} />);
+    form.render();
 
     // Act
-    await submitForm();
+    await form.whenSubmitted();
 
     // Assert
-    expect(selectors.deskNameErrorMessage()).toBeVisible();
-    expect(selectors.numberOfEmployeesErrorMessage()).toBeVisible();
+    form.expectInErrorState();
   });
 
   test("allows the user to provide the information required for adding a new desk", async () => {
     // Arrange
-    const addDesk = jest.fn();
-
-    renderForTesting(<AddNewDeskView onNewDesk={addDesk} />);
-    expect(selectors.deskNameErrorMessage()).not.toBeInTheDocument();
-    expect(selectors.numberOfEmployeesErrorMessage()).not.toBeInTheDocument();
+    form.render();
 
     // Act
-    userEvent.type(selectors.deskNameInput(), "Some awesome desk");
-    userEvent.type(selectors.numberOfEmployeesInput(), "50");
-    await submitForm();
+    form.whenFilledCorrectly();
+    await form.whenSubmitted();
 
     // Assert
-    expect(addDesk).toHaveBeenCalledTimes(1);
-    expect(addDesk).toHaveBeenCalledWith("Some awesome desk", 50);
+    form.expectHasBeenSubmitted();
   });
 });
+
+class AddNewDeskViewTest {
+  private addDesk;
+
+  constructor() {
+    this.addDesk = jest.fn();
+  }
+
+  render() {
+    renderForTesting(<AddNewDeskView onNewDesk={this.addDesk} />);
+    expect(this.deskNameErrorMessage).not.toBeInTheDocument();
+    expect(this.numberOfEmployeesErrorMessage).not.toBeInTheDocument();
+  }
+
+  whenFilledCorrectly() {
+    userEvent.type(this.deskNameInput, "Some awesome desk");
+    userEvent.type(this.numberOfEmployeesInput, "50");
+  }
+
+  whenSubmitted() {
+    return act(async () => {
+      userEvent.click(this.submitButton);
+    });
+  }
+
+  expectInErrorState() {
+    expect(this.deskNameErrorMessage).toBeVisible();
+    expect(this.numberOfEmployeesErrorMessage).toBeVisible();
+  }
+
+  expectHasBeenSubmitted() {
+    expect(this.addDesk).toHaveBeenCalledTimes(1);
+    expect(this.addDesk).toHaveBeenCalledWith("Some awesome desk", 50);
+  }
+
+  get deskNameInput() {
+    return screen.getByLabelText("Desk name");
+  }
+
+  get deskNameErrorMessage() {
+    return screen.queryByText("The desk name is required.");
+  }
+
+  get numberOfEmployeesInput() {
+    return screen.getByLabelText("Number of employees");
+  }
+
+  get numberOfEmployeesErrorMessage() {
+    return screen.queryByText("The number of employees is required.");
+  }
+
+  get submitButton() {
+    return screen.getByRole("button", { name: "Add desk" });
+  }
+}

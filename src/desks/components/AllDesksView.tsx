@@ -1,29 +1,35 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import styled from "styled-components";
 
 import { AppState } from "../../store";
+import { VStack } from "../../components/VStack";
 import { Desk } from "../Desk";
 import { allDesks } from "../desksSlice";
+import { DeskItem } from "./DeskItem";
 
 interface AllDesksViewProps {
   desks: Desk[];
 }
 
 export const AllDesksView = ({ desks }: AllDesksViewProps) => (
-  <div>
+  <VStack>
     <Link to="/desks/add">Add a new desk</Link>
 
-    <ul>
+    <DeskList>
       {desks.map((desk) => (
-        <li key={desk.id}>
-          {desk.name} ({desk.numberOfEmployees} employees)
-        </li>
+        <DeskItem key={desk.id} desk={desk} />
       ))}
-    </ul>
-  </div>
+    </DeskList>
+  </VStack>
 );
 
 export const AllDesksViewContainer = connect((state: AppState) => ({
   desks: allDesks(state),
 }))(AllDesksView);
+
+const DeskList = styled.ul`
+  display: grid;
+  grid-gap: 2rem;
+`;

@@ -4,6 +4,8 @@ import { Desk } from "./desks/Desk";
 
 export interface DesksRepository {
   save(name: string, numberOfEmployees: number): Promise<Desk>;
+  update(desk: Desk): Promise<Desk>;
+  ofId(deskId: string): Promise<Desk>;
 }
 
 export interface Navigator {
